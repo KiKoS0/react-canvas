@@ -368,11 +368,11 @@ export class DrawingState {
     canvasDraw.points.push(canvasDraw.clampPointToDocument(canvasDraw.lazy.brush.toObject()));
 
     // Draw current points
-    canvasDraw.drawPoints({
-      points: canvasDraw.points,
-      brushColor: canvasDraw.props.brushColor,
-      brushRadius: canvasDraw.props.brushRadius
-    });
+    // canvasDraw.drawPoints({
+    //   points: canvasDraw.points,
+    //   brushColor: canvasDraw.props.brushColor,
+    //   brushRadius: canvasDraw.props.brushRadius
+    // });
 
     return this;
   };

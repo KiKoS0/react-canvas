@@ -38,6 +38,7 @@ const boundsProp = PropTypes.shape({
 export default class CanvasDraw extends PureComponent {
   static propTypes = {
     onChange: PropTypes.func,
+    onSaveline: PropTypes.func,
     loadTimeOffset: PropTypes.number,
     lazyRadius: PropTypes.number,
     brushRadius: PropTypes.number,
@@ -66,6 +67,7 @@ export default class CanvasDraw extends PureComponent {
 
   static defaultProps = {
     onChange: null,
+    onSaveline: null,
     loadTimeOffset: 5,
     lazyRadius: 12,
     brushRadius: 10,
@@ -570,12 +572,15 @@ export default class CanvasDraw extends PureComponent {
   saveLine = ({ brushColor, brushRadius } = {}) => {
     if (this.points.length < 2) return;
 
-    // Save as new line
-    this.lines.push({
+    const newLine = {
       points: [...this.points],
       brushColor: brushColor || this.props.brushColor,
       brushRadius: brushRadius || this.props.brushRadius,
-    });
+    }
+    this.triggerOnSaveline(newLine)
+
+    // Save as new line
+    this.lines.push(newLine);
 
     // Reset points array
     this.points.length = 0;
@@ -599,6 +604,10 @@ export default class CanvasDraw extends PureComponent {
 
   triggerOnChange = () => {
     this.props.onChange && this.props.onChange(this);
+  };
+
+  triggerOnSaveline = (data) => {
+    this.props.onSaveline && this.props.onSaveline(data);
   };
 
   clearWindow = (ctx) => {

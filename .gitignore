@@ -6,3 +6,6 @@
 /umd
 npm-debug.log*
 .vscode/
+
+.yarn/cache/
+.yarn/install-state.gz
