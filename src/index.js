@@ -267,6 +267,15 @@ export default class CanvasDraw extends PureComponent {
     }
   };
 
+  drawLine = (line) => {
+    this.clear();
+    const bakPoints = this.points;
+    this.points = line.points;
+    this.lines = [...this.lines, line];
+    this.simulateDrawingLines({ lines: this.lines, immediate: true });
+    this.points = bakPoints;
+  };
+
   ///// private API ////////////////////////////////////////////////////////////
 
   ///// React Lifecycle
@@ -576,8 +585,8 @@ export default class CanvasDraw extends PureComponent {
       points: [...this.points],
       brushColor: brushColor || this.props.brushColor,
       brushRadius: brushRadius || this.props.brushRadius,
-    }
-    this.triggerOnSaveline(newLine)
+    };
+    this.triggerOnSaveline(newLine);
 
     // Save as new line
     this.lines.push(newLine);
