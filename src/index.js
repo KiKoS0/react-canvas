@@ -267,14 +267,19 @@ export default class CanvasDraw extends PureComponent {
     }
   };
 
-  drawLine = (line) => {
-    this.clear();
+  drawLine = (line, triggerOnSaveline = false) => {
+    const lines = [...this.lines, line]
     const bakPoints = this.points;
     this.points = line.points;
-    this.lines = [...this.lines, line];
-    this.simulateDrawingLines({ lines: this.lines, immediate: true });
+    this.clearExceptErasedLines();
+    this.simulateDrawingLines({ lines: lines, immediate: true, triggerOnSaveline });
     this.points = bakPoints;
   };
+
+  drawLines = (lines, triggerOnSaveline = false, immediate = true) => {
+    this.clear();
+    this.simulateDrawingLines({ lines, immediate, triggerOnSaveline });
+  }
 
   ///// private API ////////////////////////////////////////////////////////////
 
@@ -497,7 +502,7 @@ export default class CanvasDraw extends PureComponent {
       drawImage({ ctx: this.ctx.grid, img: this.image });
   };
 
-  simulateDrawingLines = ({ lines, immediate }) => {
+  simulateDrawingLines = ({ lines, immediate, triggerOnSaveline = true }) => {
     // Simulate live-drawing of the loaded lines
     // TODO use a generator
     let curTime = 0;
@@ -517,7 +522,7 @@ export default class CanvasDraw extends PureComponent {
 
         // Save line with the drawn points
         this.points = points;
-        this.saveLine({ brushColor, brushRadius });
+        this.saveLine({ brushColor, brushRadius, triggerOnSaveline });
         return;
       }
 
@@ -578,7 +583,7 @@ export default class CanvasDraw extends PureComponent {
     this.ctx.temp.stroke();
   };
 
-  saveLine = ({ brushColor, brushRadius } = {}) => {
+  saveLine = ({ brushColor, brushRadius, triggerOnSaveline = true } = {}) => {
     if (this.points.length < 2) return;
 
     const newLine = {
@@ -586,7 +591,7 @@ export default class CanvasDraw extends PureComponent {
       brushColor: brushColor || this.props.brushColor,
       brushRadius: brushRadius || this.props.brushRadius,
     };
-    this.triggerOnSaveline(newLine);
+    if (triggerOnSaveline) this.triggerOnSaveline(newLine);
 
     // Save as new line
     this.lines.push(newLine);
